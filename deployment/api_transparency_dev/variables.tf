@@ -20,11 +20,19 @@ variable "tls" {
   type        = bool
 }
 
-variable "distributor_host" {
+variable "distributor_host_prod" {
   description = "Host name serving distributor service API"
 }
-variable "distributor_port" {
-  description = "Port on distributor_host where distributor service API is served"
+variable "distributor_port_prod" {
+  description = "Port on distributor_host_prod where distributor service API is served"
+  type        = number
+}
+
+variable "distributor_host_ci" {
+  description = "Host name serving distributor CI service API"
+}
+variable "distributor_port_ci" {
+  description = "Port on distributor_host_ci where distributor service API is served"
   type        = number
 }
 

@@ -58,7 +58,7 @@ module "lb-http" {
       port        = 443
       groups = [
         {
-          group = google_compute_global_network_endpoint_group.distributor.id
+          group = google_compute_global_network_endpoint_group.distributor_prod.id
         }
       ]
 
@@ -114,7 +114,7 @@ resource "google_compute_url_map" "default" {
       ]
       route_action {
         url_rewrite {
-          host_rewrite = var.distributor_host
+          host_rewrite = var.distributor_host_prod
         }
       }
       service = module.lb-http.backend_services["default"].id
@@ -204,18 +204,32 @@ resource "google_compute_backend_bucket" "firmware_artefacts_ci_1" {
 }
 
 
-resource "google_compute_global_network_endpoint_group" "distributor" {
-  name                  = "distributor"
+resource "google_compute_global_network_endpoint_group" "distributor_prod" {
+  name                  = "distributor_prod"
   project               = var.project_id
   provider              = google-beta
-  default_port          = var.distributor_port
+  default_port          = var.distributor_port_prod
   network_endpoint_type = "INTERNET_FQDN_PORT"
 }
 
-resource "google_compute_global_network_endpoint" "distributor" {
-  global_network_endpoint_group = google_compute_global_network_endpoint_group.distributor.name
-  port                          = var.distributor_port
-  fqdn                          = var.distributor_host
+resource "google_compute_global_network_endpoint" "distributor_prod" {
+  global_network_endpoint_group = google_compute_global_network_endpoint_group.distributor_prod.name
+  port                          = var.distributor_port_prod
+  fqdn                          = var.distributor_host_prod
+}
+
+resource "google_compute_global_network_endpoint_group" "distributor_ci" {
+  name                  = "distributor_ci"
+  project               = var.project_id
+  provider              = google-beta
+  default_port          = var.distributor_port_ci
+  network_endpoint_type = "INTERNET_FQDN_PORT"
+}
+
+resource "google_compute_global_network_endpoint" "distributor_ci" {
+  global_network_endpoint_group = google_compute_global_network_endpoint_group.distributor_ci.name
+  port                          = var.distributor_port_ci
+  fqdn                          = var.distributor_host_ci
 }
 
 ## Terraform keys
